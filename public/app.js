@@ -1,6 +1,4 @@
-
-   
-
+// Get all the necessary data
     // Get the json data
     async function getData () {
         let json = await fetch('http://localhost:3000/dino.json')
@@ -14,59 +12,33 @@
 
     };
 
-    // Get the image filenames
-    async function getArray () {
-        let array = await fetch('http://localhost:3000/array')
-        .then((response) => {
-            return response.json();
-          })
-        .catch((error) => {
-            console.log(error);
-          });
-        return array;
 
-    };
-
-        // Preparation of the data for the objects
+// Preparation of the data for the objects
     async function dinoProducer () {
-        // Get array with image filenames
-        let imagearray = await getArray();
-        // console.log(imagearray);
         // Get json data
         let dinoData = await getData();
-        // let dino = dinoData.Dinos[0].species;
-        // console.log(dino);
-
-        // Require the species
+        // Store all species in one array
         const speciesArray = [];
-        // dinoData.Dinos.forEach(element => console.log(element.species));
         dinoData.Dinos.forEach(element => speciesArray.push(element.species));
-        // console.log(speciesArray);
-        // Require the facts
+        // Store all facts in one array
         const factsArray = [];
         dinoData.Dinos.forEach(element => factsArray.push(element.fact));
-        // console.log(factsArray);
-        // Requireing the heights
+        // Store all heights in one array
         const heightArray = [];
         dinoData.Dinos.forEach(element => heightArray.push(element.height));
-        // console.log(heightArray);
-        // Require the heights
+        // Store all weights in one array
         const weightArray = [];
         dinoData.Dinos.forEach(element => weightArray.push(element.weight));
-        // console.log(weightArray);
-        // Require the heights
+        // Store all diets in one array
         const dietArray = [];
         dinoData.Dinos.forEach(element => dietArray.push(element.diet));
-        // console.log(dietArray);
+        // Return all the prepared array in an object
         let obj = {speciesArray:speciesArray, factsArray:factsArray, heightArray:heightArray, weightArray:weightArray, dietArray:dietArray};   
         return obj;
     };
 
 
-
-
-
-    // Create Dino Constructor
+// Create Dino Constructor
     function Dino (species, height, weight, diet) {
         this.species = species;
         this.height = height;
@@ -74,39 +46,25 @@
         this.diet = diet;
         this.image = 'http://localhost:3000/images/'+this.species.toLowerCase()+'.png';
     }
-
+    // Create the Dino objects and the pigeon object 
     async function createDinos () {
         let miau = await dinoProducer();
-        // console.log('logging miiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiaaaaaaaaaaaaaaaaaaaaaaaaaaau here')
-        // console.log(miau);
-        // console.log(miau.speciesArray[0]);
-        // Create Dino Objects
         let allthedinos = [];
+        // Iterate over the prepared array to create the single Dino objects
         for (let i=0; i<7; i++) {
         allthedinos[i] = new Dino(miau.speciesArray[i], miau.heightArray[i], miau.weightArray[i], miau.dietArray[i]);
         };
-        console.log('allthedinosarecommingin')
-        console.log(allthedinos);
+        // Use the information prepared regarding the pigeon to create the pigeon object
         let pigeon = new Dino (miau.speciesArray[7], miau.heightArray[7], miau.weightArray[7], miau.dietArray[7]);
-        // if (imageFileNames.includes('pigeon.png')) {
-        // pigeon.imagepng = 'pigeon.png';
-        // };
-        console.log('here comes the pigpigpigpigpigpigpigpigeon');
-        console.log(pigeon);
+        // Return an object with two keys, one for the dinos and one for the pigeon
+        // to the key dinos, assign the array containing all the prepared dino objects
+        // to the key pigeon, assign the prepared pigeon object
         return {dinos : allthedinos,
                 pigeon : pigeon
             }
         };
 
-
-
-    // createDinos();
-  
-   
-    
- 
     // Use IIFE to get human data from form
-
     let person = (function () {
         let privName = '';
         let privHeightFeet = 0;
@@ -139,7 +97,7 @@
           privDiet = document.getElementById("diet").value;
           return privDiet;
         }
-
+    // Return human data object
         return {
           name: theName,
           feet: theFeet,
@@ -151,8 +109,7 @@
     })();
 
 
-    // Create Human Object
-    // can I wrap this around the IIFE? :)
+    // Create Human Object and return it
     function createHuman() {
         let human = {
             name : person.name(),
@@ -165,128 +122,97 @@
     return human;
     };
 
-    // async function Test () {
-    //     console.log('carzyness**********************************************************');
-    //     let veilchen = await createDinos();
-    //     console.log(veilchen);
-    //     console.log('die fertigen dinos');
-    //     console.log(veilchen.dinos[0]);
-    //     console.log('die taube');
-    //     console.log(veilchen.pigeon);
-    // };
-    // Test();
-
-    // Fisher-Yates Shuffle Algorithm
-
-    // Who is taller?
-
+    // Create an Array from the results returned by the three methods comparing
+    // human data to dino data
     async function produceArray() {
-        let magicarray = [];
+        // Array prepared to store the results return from the three methods
+        let threemethodsresults = [];
+        // Compare Human to Dino with respect to the height
         async function whoTaller() {
-            let snowflake = await dinoProducer();
-            let snow = await createHuman();
-            console.log('snooooooooooooooooooooooooow');
-            console.log(snowflake); 
+            let dino = await dinoProducer();
+            let human = await createHuman();
+            // Count how often a Dino is taller than the Human etc.
             let counttaller = 0;
             let countsmaller = 0;
             let countequal = 0;
-            console.log('????????????????????????????????????????????????????');
-            console.log(snowflake.heightArray);
-            console.log(snow.heightfeet);
-            for (let i=0; i<snowflake.heightArray.length; i++) {
-                if (snowflake.heightArray[i] > snow.heightfeet) {
+            // iterate over the array containing all dino heights
+            for (let i=0; i < dino.heightArray.length; i++) {
+                // if the dino is taller than the human, increment the taller count by one
+                if (dino.heightArray[i] > human.heightfeet) {
                     counttaller++;
-                } else if (snowflake.heightArray[i] < snow.heightfeet) {
+                // if the dino is smaller than the human, increment the smaller count by one
+                } else if (dino.heightArray[i] < human.heightfeet) {
                     countsmaller++;
+                // or increment the equal count by one
                 } else {
                     countequal++;
                 };      
               };
-         
-            let bumblebee = `${counttaller} dinosaurs are taller than you. ${countsmaller} dinosaurs are smaller than you. Equal size: ${countequal} dinosaurs.`
-            return bumblebee;
+            // Store the strings with the results of the comparison in a variable
+            let heightresults = `${counttaller} dinosaurs are taller than you. ${countsmaller} dinosaurs are smaller than you. Equal size: ${countequal} dinosaurs.`
+            // Return the variable
+            return heightresults;
         };
-
+        // Compare Human to Dino with respect to the weight
         async function whoHeavier() {
-            let snowflake = await dinoProducer();
-            let snow = await createHuman();
+            let dino = await dinoProducer();
+            let human = await createHuman();
+            // Count how often a Dino is heavier than the Human etc.
             let countheavier = 0;
             let countlighter = 0;
             let countequalweight = 0;
-            for (let i=0; i<snowflake.weightArray.length; i++) {
-                if (snowflake.weightArray[i] > snow.weight) {
+            // iterate over the array containing all dino weights
+            for (let i=0; i<dino.weightArray.length; i++) {
+                // if the dino is heavier than the human, increment the heavier count by one
+                if (dino.weightArray[i] > human.weight) {
                     countheavier++;
-                } else if (snowflake.weightArray[i] < snow.weight) {
+                // if the dino is lighter than the human, increment the lighter count by one
+                } else if (dino.weightArray[i] < human.weight) {
                     countlighter++;
+                // or increment the equal count by one
                 } else {
                     countequalweight++;
                 };      
               };
-              let bee = `${countheavier} dinosaurs are heavier than you. ${countlighter} dinosaurs are lighter than you. Equal weight: ${countequalweight} dinosaurs.`;
-              return bee; 
+              // Store the strings with the results of the comparison in a variable
+              let weightresults = `${countheavier} dinosaurs are heavier than you. ${countlighter} dinosaurs are lighter than you. Equal weight: ${countequalweight} dinosaurs.`;
+              // Return the variable
+              return weightresults; 
 
             };
-
-            async function whoDiet() {
-                let snowflake = await dinoProducer();
-                let snow = await createHuman();
-                let countsamediet = 0;
-                let test1 = console.log(snowflake.dietArray);
-                let test2 = console.log(snow.diet.toString().toLocaleLowerCase());
-                for (let i=0; i<snowflake.dietArray.length; i++) {
-                    if (snowflake.dietArray[i] === snow.diet.toString().toLowerCase()) {
-                        countsamediet++;
-                    };      
-                  };
-                  let fly = `${countsamediet} dinosaurs enjoy the same diet as you do.`;
-                  return fly; 
+            // Compare Human to Dino with respect to the diet
+        async function whoDiet() {
+            let dino = await dinoProducer();
+            let human = await createHuman();
+            // Count how many Dinos share the same diet as the human
+            let countsamediet = 0;
+            // iterate over the array containing all dino diets
+            for (let i=0; i<dino.dietArray.length; i++) {
+                // if the dino's diet is euqal to the human's diet, 
+                // increment the samediet count by one
+                if (dino.dietArray[i] === human.diet.toString().toLowerCase()) {
+                    countsamediet++;
+                };      
+            };
+            //// Store the string with the result of the comparison in a variable   
+            let dietresult = `${countsamediet} dinosaurs enjoy the same diet as you do.`;
+            //Return the variable   
+            return dietresult; 
     
-                };
+        };
 
         let arrayitemfirst = await whoTaller();
         let arrayitemsecond = await whoHeavier();
         let arrayitemthird = await whoDiet();
-        magicarray.push(arrayitemfirst);
-        magicarray.push(arrayitemsecond);
-        magicarray.push(arrayitemthird);
-        console.log('#######################################################################');
-        console.log(magicarray);
-        return magicarray;
+        threemethodsresults.push(arrayitemfirst);
+        threemethodsresults.push(arrayitemsecond);
+        threemethodsresults.push(arrayitemthird);
+        return threemethodsresults;
     };
 
-   
-     
 
-        // for each dino compare numbers - count how often result is < 0 
-        // dino - human > 0 : You are smaller than ... dinos
-        // dino - human < 0 : You are taller than ... dinos
-        // dino - human = 0 : You are just as tall as ... dinos
-
-    
-
-    function justaTest () {
-        let lila = ['smaller', 'lighter', 'plantier'];
-        return lila;
-    };
-    // Who is heavier?
-    // function whoHeavier() {
-    //     // for each dino compare numbers - count how often result is < 0 
-    //     // dino - human > 0 : You are smaller than ... dinos
-    //     // dino - human < 0 : You are taller than ... dinos
-    //     // dino - human = 0 : You are just as tall as ... dinos
-    // };
-    
-
-    // // What about the diet? 
-
-    // function whoDiet() {
-    //     // for each dino compare to human diet 
-    //     // dino === human
-    //     // ... dinos enjoy the same diet as you do
-    //     // 
-    // };
-
-
+// The modern version of the Fisher-Yates Shuffle Algorithm
+// found here: https://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array/6274398
     function shuffle(a) {
         var j, x, i;
         for (i = a.length - 1; i > 0; i--) {
@@ -300,104 +226,107 @@
 
 
     async function createTiles() {
-        // let rosa = await justaTest();
-        let rosa = await produceArray();
-        console.log('4444444444444444444444444444444444444444444444444444444');
-        console.log(rosa);
-        let pinsvin = await dinoProducer();
-        let pigeonfact = pinsvin.factsArray.pop();
-        console.log(pinsvin.factsArray);
-        // let facts = ['fact1', 'fact2', 'fact3', 'fact4', 'fact5', 'fact6', 'fact7', 'fact8', 'fact9'];
-        // let erdbeere = await shuffle(facts);
-        // first shuffle it (array without pigeon), then pick only 6 items and combine them with, slice 
-        // let erdbeere = await shuffle(pinsvin.factsArray);
-        let beforeerdbeere = await shuffle(pinsvin.factsArray);
-        let beforeerdbeere2 = beforeerdbeere.slice(0, 4);
-        let erdbeere = await shuffle (rosa.concat(beforeerdbeere2));
-        let veilchen = await createDinos();
-        console.log('veiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiilchen');
-        console.log(veilchen);
-        let moose = createHuman();
-        console.log('mooooooooooooooooooooooooooose');
-        console.log(moose);
-        console.log(moose.name);
+        // variable storing the results from the comparisons
+        let comparisonresults = await produceArray();
+        // variable storing the data arrays regarding the dinos
+        let arraydata = await dinoProducer();
+        // the pigeon fact is the last in the factsArray
+        // pop it off an store it in the pigeonfact variable
+        let pigeonfact = arraydata.factsArray.pop();
+        // To ensure the randomeness of the displayed facts:
+        // shuffle the array with the dino facts
+        let shuffleddinofacts = await shuffle(arraydata.factsArray);
+        // to display 7 random facts, take the first 4 random facts from the dino facts
+        let fourdinofacts = shuffleddinofacts.slice(0, 4);
+        // and combine with the comparison results in one array
+        // shuffle again to ensure random positioning
+        let randomfacts = await shuffle (comparisonresults.concat(fourdinofacts));
+        // store the dino objects in dinoData
+        let  dinoData = await createDinos(); 
+        // store human object in humanData
+        let humanData = createHuman();
+
         let item = [];
-        let dinofact = [];
+        // create 9 div elements
         for (let i=0; i<9; i++) {
             item[i] = document.createElement("div");
+            // set the class attribute to grid-item
             item[i].setAttribute("class", "grid-item");
+            // append the grid-items to the grid
             document.getElementById("grid").appendChild(item[i]);
-            // dinofact[i] = document.createTextNode(erdbeere[i]);
-            // item[i].appendChild(dinofact[i]);
         };
-
+        let dinofact = [];
         let dinotext = [];
         let dinoimage = [];
-        for (let i=0; i<7; i++) {
-            dinotext[i] = document.createTextNode(veilchen.dinos[i].species);
-            console.log(dinotext[i]);
+        for (let i=0; i < 7; i++) {
+            // create seven text nodes to display the dino species
+            dinotext[i] = document.createTextNode(dinoData.dinos[i].species);
+            // create seven image elements, with associated image sources
             dinoimage[i] = document.createElement("img");
-            dinoimage[i].src = veilchen.dinos[i].image;
-            dinofact[i] = document.createTextNode(erdbeere[i]);
-            // DINO FACTS
-            // dinofact[i] = document.createTextNode(facts[i]);
-            // let pigeonimg = document.createElement("img");
-            // pigeonimg.src = veilchen.pigeon.image;
-            // item[5].appendChild(pigeonimg);
-            // item[i].appendChild(dinoimage[i]);
+            dinoimage[i].src = dinoData.dinos[i].image;
+            // create seven text nodes to display the random facts
+            dinofact[i] = document.createTextNode(randomfacts[i]);
+            // tile 4 is permanently taken by the human and tile 5 by the pigeon
+            // the other tiles will be filled with dinos
+            // skip tile 4 and 5 when adding data, fill it in tile 6, 7, 8
             if (i>3){
-                // DINO FACT
+                // add the dinofact to each relevant tile
                 item[i+2].appendChild(dinofact[i]);
+                // add the image to each relevant tile
                 item[i+2].appendChild(dinoimage[i]);
+                // add the species to each relevant tile
                 item[i+2].appendChild(dinotext[i]);
-                // item[i+2].appendChild(dinofact[i]);
             } else {
-                // DINO FACT
+                //add data to tile 0, 1, 2, 3
                 item[i].appendChild(dinofact[i])
                 item[i].appendChild(dinoimage[i]);
                 item[i].appendChild(dinotext[i]);
-                // item[i].appendChild(dinofact[i]);
-                
             };
             
         };
   
     // The Human Tile
-        var DOM_img = document.createElement("img");
-        DOM_img.src = moose.image;
-        item[4].appendChild(DOM_img);
-        var textnode = document.createTextNode(moose.name);         // Create a text node
-        item[4].appendChild(textnode); 
-    // 
+        // create the image element for the human, with the asspciated source
+        let humanimg = document.createElement("img");
+        humanimg.src = humanData.image;
+        // add the image to the tile
+        item[4].appendChild(humanimg);
+        // create a text node for the human's name
+        var humanname = document.createTextNode(humanData.name);
+        // add the name to the tile
+        item[4].appendChild(humanname); 
+
     // The Pigeon Tile
+        // create text node for the pigeon fact
         let pigeonfactDom = document.createTextNode(pigeonfact);
+        // add the fact to the tile
         item[5].appendChild(pigeonfactDom);
+        // create image element for the pigeon, with the associated source
         let pigeonimg = document.createElement("img");
-        pigeonimg.src = veilchen.pigeon.image;
+        pigeonimg.src = dinoData.pigeon.image;
+        // add image to tile
         item[5].appendChild(pigeonimg);
-        let pigeontext = document.createTextNode(veilchen.pigeon.species);         // Create a text node
+        // create text node to display pigeon species
+        let pigeontext = document.createTextNode(dinoData.pigeon.species);
+        // add pigeon to tile
         item[5].appendChild(pigeontext); 
         
 
     };
-
-    // createTiles();
-
+    // The main function, executed when the 'Compare Me' button is clicked
     function main () {
-        let icecream = createHuman();
-        console.log('here comes the human');
-        console.log(icecream);
+        // get the data from the form and create the human object
+        createHuman();
+        // let the form disappear when the button is clicked
         document.getElementById("dino-compare").style.display = "none";
-        createTiles();
+        // produce array with comparison facts: human - dino
         produceArray();
-
+        // create the tiles displaying the information
+        createTiles();
     };
 
 
-
-
-
-    // The EventListener
+    // The EventListener: when the button is clicked, execute the main() function
     document.getElementById("btn").addEventListener('click', main);
 
 
