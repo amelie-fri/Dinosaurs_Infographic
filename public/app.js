@@ -64,53 +64,55 @@
             }
         };
 
-    // Use IIFE to get human data from form
-    let person = (function () {
-        let privName = '';
-        let privHeightFeet = 0;
-        let privHeightInches = 0;
-        let privWeight = 0;
-        let privDiet = '';
-
-      
-        function theName() {
-          privName = document.getElementById("name").value;
-          return privName;
-        }
-
-        function theFeet() {
-          privHeightFeet = document.getElementById("feet").value;
-          return privHeightFeet;
-        }
-
-        function theInches() {
-          privHeightInches = document.getElementById("inches").value;
-          return privHeightInches;
-        }
-
-        function theWeight() {
-          privWeight = document.getElementById("weight").value;
-          return privWeight;
-        }
-
-        function theDiet() {
-          privDiet = document.getElementById("diet").value;
-          return privDiet;
-        }
-    // Return human data object
-        return {
-          name: theName,
-          feet: theFeet,
-          inches: theInches,
-          weight: theWeight,
-          diet: theDiet,
-
-        }
-    })();
-
 
     // Create Human Object and return it
     function createHuman() {
+        // Use IIFE to get human data from form
+        let person = (function () {
+            let privName = '';
+            let privHeightFeet = 0;
+            let privHeightInches = 0;
+            let privWeight = 0;
+            let privDiet = '';
+    
+          
+            function theName() {
+              privName = document.getElementById("name").value;
+              return privName;
+            }
+    
+            function theFeet() {
+              privHeightFeet = document.getElementById("feet").value;
+              return privHeightFeet;
+            }
+    
+            function theInches() {
+              privHeightInches = document.getElementById("inches").value;
+              return privHeightInches;
+            }
+    
+            function theWeight() {
+              privWeight = document.getElementById("weight").value;
+              return privWeight;
+            }
+    
+            function theDiet() {
+              privDiet = document.getElementById("diet").value;
+              return privDiet;
+            }
+        // Return human data object
+            return {
+              name: theName,
+              feet: theFeet,
+              inches: theInches,
+              weight: theWeight,
+              diet: theDiet,
+    
+            }
+        })();
+
+
+
         let human = {
             name : person.name(),
             heightfeet : person.feet(),
