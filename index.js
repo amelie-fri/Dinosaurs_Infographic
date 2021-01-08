@@ -1,11 +1,11 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require('express');
 
-
+const app = express();
+const port = 3000;
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  // eslint-disable-next-line no-console
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 
 app.use(express.static('public'));

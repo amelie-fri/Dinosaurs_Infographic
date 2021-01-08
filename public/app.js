@@ -6,6 +6,7 @@ async function getData() {
   const json = await fetch('http://localhost:3000/dino.json')
     .then((response) => response.json())
     .catch((error) => {
+      // eslint-disable-next-line no-console
       console.log(error);
     });
   return json;
@@ -100,6 +101,32 @@ function createHuman() {
       privDiet = document.getElementById('diet').value;
       return privDiet;
     }
+
+    function isValid() {
+      let retval = true;
+      if (privName === '') {
+        retval = false;
+      }
+
+      if (privHeightFeet === '') {
+        retval = false;
+      }
+
+      if (privHeightFeet === '') {
+        retval = false;
+      }
+
+      if (privWeight === '') {
+        retval = false;
+      }
+
+      if (privDiet === '') {
+        retval = false;
+      }
+
+      return retval;
+    }
+
     // Return human data object
     return {
       name: theName,
@@ -107,6 +134,7 @@ function createHuman() {
       inches: theInches,
       weight: theWeight,
       diet: theDiet,
+      valid: isValid,
 
     };
   }());
@@ -117,6 +145,7 @@ function createHuman() {
     heightinches: person.inches(),
     weight: person.weight(),
     diet: person.diet(),
+    valid: person.valid(),
     image: 'http://localhost:3000/images/human.png',
   };
   return human;
@@ -309,13 +338,14 @@ async function createTiles() {
 // The main function, executed when the 'Compare Me' button is clicked
 function main() {
   // get the data from the form and create the human object
-  createHuman();
+  if (createHuman().valid === true) {
   // let the form disappear when the button is clicked
-  document.getElementById('dino-compare').style.display = 'none';
-  // produce array with comparison facts: human - dino
-  produceArray();
-  // create the tiles displaying the information
-  createTiles();
+    document.getElementById('dino-compare').style.display = 'none';
+    // produce array with comparison facts: human - dino
+    produceArray();
+    // create the tiles displaying the information
+    createTiles();
+  }
 }
 
 // The EventListener: when the button is clicked, execute the main() function
